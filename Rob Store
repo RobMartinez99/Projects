@@ -1,0 +1,19 @@
+CREATE TABLE Rob_Store
+(id INTEGER PRIMARY KEY,Name TEXT,Quantity INTEGER, Aisle Integer, Price Integer);
+
+INSERT Into Rob_Store Values (1,"Protein",25,4,69.99);
+INSERT Into Rob_Store Values (2,"Fat Burners",50,3,49.99);
+INSERT Into Rob_Store Values (3,"Weight Gainers",15,2,79.99);
+INSERT Into Rob_Store Values (4,"Omega 3",10,1,29.99);
+INSERT Into Rob_Store VALUES (5, "Sleep Aids",100,5,19.99);
+INSERT Into Rob_Store Values (6,"Detox",12,6,39.99);
+
+SELECT*FROM Rob_Store;
+
+Select*From Rob_Store Where quantity>20;
+
+SELECT SUM (quantity) FROM Rob_Store;
+
+SELECT AVG (price) From Rob_Store;
+
+Select*From Rob_Store Where price>29.99;
