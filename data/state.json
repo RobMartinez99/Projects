@@ -1,0 +1,560 @@
+{
+  "dashboard": {
+    "lastBriefing": null,
+    "weeklyReview": null
+  },
+  "mc": {
+    "operatingMode": "MINIMUM OPERATION",
+    "phase": "Phase 1 \u2014 Warm Market / Manual Sales",
+    "revenueGoal": "$10K/month by Sept 1, 2026",
+    "callList": [
+      {
+        "name": "Ana",
+        "ghlStage": "Inbound Lead",
+        "ghlSyncStatus": "synced",
+        "value": 0,
+        "lastContactDate": "2026-06-27",
+        "nextActionDate": null,
+        "nextAction": "Make first contact call",
+        "alfredNote": "",
+        "ghlOpportunityId": "pcMvAFsXQrfPu9NekwaW",
+        "ghlContactId": "y0eSF3wpGJMX6WVesvUE"
+      },
+      {
+        "name": "Cousin (warm lead)",
+        "ghlStage": "Needs Analysis",
+        "ghlSyncStatus": "manual",
+        "value": 0,
+        "lastContactDate": null,
+        "nextActionDate": null,
+        "nextAction": "Complete needs analysis and prepare quote",
+        "alfredNote": "Warm market \u2014 policy ready to write per prior notes"
+      },
+      {
+        "name": "Daughters",
+        "ghlStage": "Consent Verified",
+        "ghlSyncStatus": "manual",
+        "value": 0,
+        "lastContactDate": null,
+        "nextActionDate": null,
+        "nextAction": "Make first contact call",
+        "alfredNote": ""
+      },
+      {
+        "name": "Fraternity contacts",
+        "ghlStage": "Inbound Lead",
+        "ghlSyncStatus": "manual",
+        "value": 0,
+        "lastContactDate": null,
+        "nextActionDate": null,
+        "nextAction": "Verify consent before outreach",
+        "alfredNote": "Group \u2014 may need to split into individual entries once contacted"
+      }
+    ],
+    "blockers": [
+      "AI Call Manager FROZEN \u2014 needs 3-call/24hr FL law update before deploy",
+      "Renewal & Nurture \u2014 remove 10 FCL sample leads from DB first",
+      "Caller ID registration PENDING (calltransparency.com, freecallerregistry.com, hiya.com)",
+      "LLC reinstatement PENDING \u2014 $660 payment (blocks toll-free 833-519-5331 verification)"
+    ],
+    "agents": [
+      {
+        "name": "Maya \u2014 COO",
+        "status": "ON-DEMAND",
+        "note": "Chat only \u2014 all webhooks OFF"
+      },
+      {
+        "name": "Atlas \u2014 Sales Assistant",
+        "status": "ON-DEMAND",
+        "note": ""
+      },
+      {
+        "name": "AI Call Manager",
+        "status": "PAUSED",
+        "note": "Outbound calling logic must enforce FL 3-call/24hr rule before activation \u2014 internal implementation work pending",
+        "stateHistory": [
+          {
+            "from": "FROZEN",
+            "to": "PAUSED",
+            "at": "2026-06-25T12:15:33Z",
+            "note": "FL 3-call/24hr compliance update confirmed \u2014 safe to re-enable",
+            "approvalId": "1782389696826"
+          }
+        ]
+      },
+      {
+        "name": "Lead Intake & Scoring",
+        "status": "ON-DEMAND",
+        "note": "Trigger to score leads manually \u2014 no active blocker",
+        "stateHistory": [
+          {
+            "from": "FROZEN",
+            "to": "ON-DEMAND",
+            "at": "2026-06-25T13:00:00Z",
+            "note": "No external blocker identified \u2014 available for on-demand lead scoring"
+          }
+        ]
+      },
+      {
+        "name": "First Touch Outreach",
+        "status": "PAUSED",
+        "note": "Halted pending call compliance resolution",
+        "stateHistory": [
+          {
+            "from": "FROZEN",
+            "to": "PAUSED",
+            "at": "2026-06-25T13:00:00Z",
+            "note": "No external blocker \u2014 halted by business decision, resumable"
+          }
+        ]
+      },
+      {
+        "name": "Follow-Up Sequences",
+        "status": "PAUSED",
+        "note": "Resumable when outreach is cleared",
+        "stateHistory": [
+          {
+            "from": "FROZEN",
+            "to": "PAUSED",
+            "at": "2026-06-25T13:00:00Z",
+            "note": "No external blocker \u2014 halted by business decision, resumable"
+          }
+        ]
+      },
+      {
+        "name": "Social Prospecting",
+        "status": "PAUSED",
+        "note": "Revenue-gated \u2014 deploy after $5K/mo",
+        "stateHistory": [
+          {
+            "from": "FROZEN",
+            "to": "PAUSED",
+            "at": "2026-06-25T13:00:00Z",
+            "note": "Revenue-gated by business decision, not external blocker"
+          }
+        ]
+      },
+      {
+        "name": "Pipeline Dashboard",
+        "status": "PAUSED",
+        "note": "GHL has built-in \u2014 optional, available if needed",
+        "stateHistory": [
+          {
+            "from": "FROZEN",
+            "to": "PAUSED",
+            "at": "2026-06-25T13:00:00Z",
+            "note": "Optional tool, not blocked externally \u2014 available on request"
+          }
+        ]
+      },
+      {
+        "name": "Referral Machine",
+        "status": "ON-DEMAND",
+        "note": "First close condition met \u2014 available on-demand",
+        "stateHistory": [
+          {
+            "from": "FROZEN",
+            "to": "ON-DEMAND",
+            "at": "2026-06-25T13:00:00Z",
+            "note": "First close logged (Cousin, $1,200 on 2026-06-25) \u2014 deploy condition met"
+          }
+        ]
+      },
+      {
+        "name": "Renewal & Nurture Machine",
+        "status": "PAUSED",
+        "note": "Remove FCL sample leads first"
+      },
+      {
+        "name": "Creative Director",
+        "status": "PAUSED",
+        "note": "Deploy after $5K/mo revenue"
+      },
+      {
+        "name": "Ad Campaign Creator",
+        "status": "PAUSED",
+        "note": ""
+      },
+      {
+        "name": "Brooks \u2014 CFO",
+        "status": "PAUSED",
+        "note": ""
+      },
+      {
+        "name": "Content Machine",
+        "status": "RETIRED",
+        "note": ""
+      }
+    ],
+    "revenueMTD": 1200.0,
+    "policiesClosed": 1,
+    "closings": [
+      {
+        "contact": "Cousin (warm lead)",
+        "premium": 1200.0,
+        "date": "2026-06-25"
+      }
+    ],
+    "notes": "",
+    "lastGHLSync": "2026-06-28T00:04:42Z",
+    "lastDedupRun": "2026-06-28T00:04:41Z"
+  },
+  "lam": {
+    "operatingMode": "STAGE-FIRST",
+    "mthRevenue": 544,
+    "unitsSold": 2,
+    "nextProduct": "The Chest Protocol ($27 tripwire) \u2014 drive leads from lead magnet",
+    "products": [
+      {
+        "name": "10 Powerful Lessons Your Father Never Taught You",
+        "price": 0,
+        "unitsSold": 0,
+        "status": "active",
+        "tier": "lead-magnet"
+      },
+      {
+        "name": "The Chest Protocol",
+        "price": 27,
+        "unitsSold": 0,
+        "status": "active",
+        "tier": "tripwire"
+      },
+      {
+        "name": "30 Days of Discipline",
+        "price": 27,
+        "unitsSold": 0,
+        "status": "active",
+        "tier": "low-ticket"
+      },
+      {
+        "name": "Modern Dating Old School Rules",
+        "price": 47,
+        "unitsSold": 0,
+        "status": "active",
+        "tier": "low-ticket"
+      },
+      {
+        "name": "Break Free From Porn Addiction",
+        "price": 47,
+        "unitsSold": 1,
+        "status": "active",
+        "tier": "low-ticket"
+      },
+      {
+        "name": "E-Book Empire",
+        "price": 497,
+        "unitsSold": 1,
+        "status": "active",
+        "tier": "flagship"
+      }
+    ],
+    "productQueue": [],
+    "blockers": [
+      "WordPress Manager FROZEN \u2014 waiting API password from developer Ruhul Amin",
+      "$27 tripwire (30-Day Chest Program) NOT BUILT YET",
+      "Outreach Engine PAUSED \u2014 website not ready",
+      "Email Nurture PAUSED \u2014 no leads yet"
+    ],
+    "agents": [
+      {
+        "name": "Ebook Empire",
+        "status": "WEBHOOK-ONLY",
+        "note": "Triggers on Typeform $497 payment only"
+      },
+      {
+        "name": "PDF Generator",
+        "status": "ON-DEMAND",
+        "note": ""
+      },
+      {
+        "name": "Sales Copy",
+        "status": "ON-DEMAND",
+        "note": "Follows LAM Writing DNA"
+      },
+      {
+        "name": "Ad Generator",
+        "status": "ON-DEMAND",
+        "note": ""
+      },
+      {
+        "name": "Email Nurture",
+        "status": "PAUSED",
+        "note": "No leads yet"
+      },
+      {
+        "name": "Sales Tracker",
+        "status": "PAUSED",
+        "note": "Weekly only when active"
+      },
+      {
+        "name": "Outreach Engine",
+        "status": "PAUSED",
+        "note": "Website not ready"
+      },
+      {
+        "name": "WordPress Manager",
+        "status": "FROZEN",
+        "note": "Waiting on API password from Ruhul Amin \u2014 external credential blocker",
+        "stateHistory": [
+          {
+            "from": "PAUSED",
+            "to": "FROZEN",
+            "at": "2026-06-25T13:10:00Z",
+            "note": "Corrected: missing credential from Ruhul Amin is external blocker \u2014 FROZEN is accurate",
+            "initiated_by": "rob",
+            "unblock_condition": "Receive WordPress API password from Ruhul Amin"
+          }
+        ]
+      }
+    ],
+    "notes": ""
+  },
+  "lifeOS": {
+    "mode": "MONK MODE",
+    "daysToTarget": 67,
+    "targetDate": "2026-09-01",
+    "targetLabel": "Quit W2",
+    "nonNegotiables": [
+      "Bible",
+      "Workout",
+      "Business"
+    ],
+    "keyDates": [
+      {
+        "date": "2026-09-01",
+        "label": "Quit W2 job",
+        "daysOut": 67,
+        "urgent": true
+      },
+      {
+        "date": "2026-09-09",
+        "label": "47th Birthday",
+        "daysOut": 77,
+        "urgent": false
+      },
+      {
+        "date": "2026-09",
+        "label": "Medell\u00edn trip",
+        "daysOut": null,
+        "urgent": false
+      }
+    ],
+    "body": {
+      "startWeight": 247,
+      "currentWeight": 237.0,
+      "goalWeight": 200,
+      "goalDate": "2026-09-01",
+      "weeklyTarget": 2.75,
+      "status": "BEHIND",
+      "lbsToGoal": 37.0
+    },
+    "weightLog": [
+      {
+        "date": "2026-06-25",
+        "weight": 237.0
+      }
+    ],
+    "dailyCheckins": [
+      {
+        "date": "2026-06-25",
+        "completed": [
+          "Bible",
+          "Workout",
+          "Business"
+        ],
+        "createdAt": "2026-06-26T00:12:05Z"
+      }
+    ],
+    "weeklyScoreboard": [
+      {
+        "weekOf": "2026-06-26",
+        "note": "Cousin policy closed. 3/3 non-negotiables hit.",
+        "createdAt": "2026-06-26T00:15:31Z",
+        "body": 8,
+        "discipline": 9,
+        "social": 7,
+        "wins": 8,
+        "focus": 9
+      }
+    ],
+    "dailyProtocol": [
+      "6:00 AM \u2014 Gym",
+      "10:00 AM\u201312:00 PM \u2014 Insurance sales",
+      "1:00 PM\u20135:00 PM \u2014 Insurance pipeline + follow-ups",
+      "7:00 PM\u20139:00 PM \u2014 LAM content + marketing"
+    ],
+    "agents": [
+      {
+        "name": "Weight Tracker",
+        "status": "ACTIVE",
+        "note": "Sunday 8AM ET"
+      },
+      {
+        "name": "Weekly Life Scoreboard",
+        "status": "ACTIVE",
+        "note": "Sunday 9AM ET"
+      },
+      {
+        "name": "IG Strategy Audit",
+        "status": "SAVED",
+        "note": "Inactive"
+      },
+      {
+        "name": "Flight Finder Copy",
+        "status": "ON-DEMAND",
+        "note": ""
+      }
+    ],
+    "notes": ""
+  },
+  "wealth": {
+    "income": {
+      "w2Biweekly": 1011
+    },
+    "totalDebt": 117363.0,
+    "totalAssets": 298.45,
+    "netWorth": -117064.55,
+    "creditScores": {
+      "experian": {
+        "score": 669,
+        "model": "FICO",
+        "asOf": "June 2026"
+      },
+      "transunion": {
+        "score": 682,
+        "model": "VantageScore",
+        "asOf": "June 2026"
+      },
+      "equifax": {
+        "score": 629,
+        "model": "VantageScore",
+        "asOf": "June 2026",
+        "note": "Up from 559!"
+      }
+    },
+    "urgentDeadlines": [
+      {
+        "date": "2026-06-26",
+        "label": "Equifax dispute response deadline",
+        "daysOut": 2,
+        "critical": true
+      },
+      {
+        "date": "2026-06-28",
+        "label": "Galaxy deletion \u2014 attorney deadline",
+        "daysOut": 4,
+        "critical": true
+      },
+      {
+        "date": "2026-06-29",
+        "label": "TransUnion dispute deadline",
+        "daysOut": 5,
+        "critical": true
+      },
+      {
+        "date": "2026-07-01",
+        "label": "Experian dispute deadline",
+        "daysOut": 7,
+        "critical": true
+      },
+      {
+        "date": "2026-06-15",
+        "label": "IRS Q2 estimated tax \u2014 MISSED \u2014 confirm with JP",
+        "daysOut": -9,
+        "critical": true
+      }
+    ],
+    "snowballOrder": [
+      {
+        "account": "Premier 6459",
+        "balance": 761.0,
+        "status": "KILL TARGET #1"
+      },
+      {
+        "account": "Premier 1127",
+        "balance": 863,
+        "status": "Next"
+      },
+      {
+        "account": "Chase 2575",
+        "balance": 3759,
+        "status": "Queued"
+      },
+      {
+        "account": "BofA 8406",
+        "balance": 6899,
+        "status": "Queued"
+      }
+    ],
+    "debt": [
+      {
+        "account": "Student Loan (defaulted)",
+        "balance": 84024,
+        "note": "Rehab at $5/mo \u2014 9 payments to exit default"
+      },
+      {
+        "account": "Auto (TD)",
+        "balance": 11510,
+        "note": ""
+      },
+      {
+        "account": "BofA 8406",
+        "balance": 6899,
+        "note": ""
+      },
+      {
+        "account": "Chase 2575",
+        "balance": 3759,
+        "note": ""
+      },
+      {
+        "account": "BOA 5882",
+        "balance": 1691,
+        "note": ""
+      },
+      {
+        "account": "Capitol One",
+        "balance": 1193,
+        "note": ""
+      },
+      {
+        "account": "IRS (ConServe)",
+        "balance": 5872,
+        "note": "$50/mo payment"
+      },
+      {
+        "account": "Premier 1127",
+        "balance": 863,
+        "note": ""
+      },
+      {
+        "account": "Premier 6459",
+        "balance": 761.0,
+        "note": "KILL FIRST"
+      },
+      {
+        "account": "Avant",
+        "balance": 791,
+        "note": "Charged off \u2014 reviewing"
+      }
+    ],
+    "agents": [
+      {
+        "name": "Debt Destroyer",
+        "status": "ACTIVE",
+        "note": "Manual biweekly"
+      },
+      {
+        "name": "Revenue Tracker",
+        "status": "ACTIVE",
+        "note": "Manual when revenue logged"
+      },
+      {
+        "name": "Market Watchlist Monitor",
+        "status": "PAUSED",
+        "note": "Until buying ETFs"
+      }
+    ],
+    "notes": ""
+  }
+}
