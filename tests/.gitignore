@@ -1,0 +1,6 @@
+# Generated on test failure — not committed; inspect locally
+diffs/
+a11y_reports/
+__pycache__/
+.pytest_cache/
+*.pyc
