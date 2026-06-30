@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alfred — Command Center</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- GLOBAL HEADER -->
+  <header class="hud-top">
+    <div class="hud-top-left">
+      <div class="brand-mark" onclick="goHome()" title="Return to core">A</div>
+      <div class="brand-info">
+        <div class="brand-name">ALFRED</div>
+        <div class="brand-sub">COMMAND CENTER</div>
+      </div>
+      <div class="nav-trail" id="navTrail"></div>
+    </div>
+    <div class="hud-top-center">
+      <div id="topDate"></div>
+      <div id="stateLoadTime" style="font-size:9px;opacity:0.35;letter-spacing:0.08em;margin-top:1px"></div>
+    </div>
+    <div class="hud-top-right">
+      <div id="approvalAlert" class="approval-alert hidden" onclick="openOverlay('approvals')">
+        <span id="approvalAlertCount">0</span> PENDING
+      </div>
+      <button class="hud-btn" onclick="enterApprovals()">APPROVALS</button>
+      <button class="hud-btn" onclick="openOverlay('memory')">MEMORY</button>
+    </div>
+  </header>
+
+  <!-- SCREENS -->
+  <div class="screens">
+
+    <!-- ── HOME SCREEN ── -->
+    <div id="screen-home" class="screen active">
+      <div class="home-layout">
+
+        <!-- Ambient glow layers -->
+        <div class="home-glow" aria-hidden="true"></div>
+        <div class="home-vignette" aria-hidden="true"></div>
+
+        <!-- Left nodes: Life OS + MC -->
+        <div class="home-nodes home-nodes-left">
+          <div class="ws-node" onclick="enterWorkspace('lifeos')">
+            <div class="node-orbit-dot"></div>
+            <div class="node-content">
+              <div class="node-name">LIFE OS</div>
+              <div class="badge badge-blue" style="margin:4px 0">MONK MODE</div>
+              <div class="node-stat" id="node-lifeos-stat">67 days → Sept 1</div>
+            </div>
+          </div>
+          <div class="node-spacer"></div>
+          <div class="ws-node" onclick="enterWorkspace('mc')">
+            <div class="node-orbit-dot"></div>
+            <div class="node-content">
+              <div class="node-name">MARTINEZ<br>CAPITAL</div>
+              <div class="badge badge-amber" style="margin:4px 0">MIN OP</div>
+              <div class="node-stat">Phase 1 · Warm Mkt</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alfred Core — SVG-based 460×460 -->
+        <div class="core-container">
+          <div class="alfred-core" id="alfredCore">
+            <svg class="core-svg" viewBox="0 0 460 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%"   stop-color="#00d4ff" stop-opacity="0.09"/>
+                  <stop offset="50%"  stop-color="#00d4ff" stop-opacity="0.025"/>
+                  <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="coreCenterGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%"   stop-color="#00d4ff" stop-opacity="0.16"/>
+                  <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <!-- Ambient background fill -->
+              <circle cx="230" cy="230" r="226" fill="url(#coreGlow)"/>
+
+              <!-- Far outer drift ring (very slow, barely visible) -->
+              <g class="svg-ring svg-r-far">
+                <circle cx="230" cy="230" r="220"
+                  fill="none" stroke="rgba(0,212,255,0.045)"
+                  stroke-width="1" stroke-dasharray="2 32"/>
+              </g>
+
+              <!-- Outer sparse ring -->
+              <g class="svg-ring svg-r4">
+                <circle cx="230" cy="230" r="196"
+                  fill="none" stroke="rgba(0,212,255,0.08)"
+                  stroke-width="1" stroke-dasharray="4 44"/>
+              </g>
+
+              <!-- Data trace lines — diagonal flows toward nodes -->
+              <!-- upper-right: r87→r157 at 45° -->
+              <line x1="291" y1="169" x2="341" y2="119"
+                stroke="rgba(0,212,255,0.28)" stroke-width="1.5"
+                stroke-linecap="round" stroke-dasharray="3 9"
+                class="data-trace"/>
+              <!-- lower-right at 135° -->
+              <line x1="291" y1="291" x2="341" y2="341"
+                stroke="rgba(0,212,255,0.28)" stroke-width="1.5"
+                stroke-linecap="round" stroke-dasharray="3 9"
+                class="data-trace dt-d1"/>
+              <!-- lower-left at 225° -->
+              <line x1="169" y1="291" x2="119" y2="341"
+                stroke="rgba(0,212,255,0.28)" stroke-width="1.5"
+                stroke-linecap="round" stroke-dasharray="3 9"
+                class="data-trace dt-d2"/>
+              <!-- upper-left at 315° -->
+              <line x1="169" y1="169" x2="119" y2="119"
+                stroke="rgba(0,212,255,0.28)" stroke-width="1.5"
+                stroke-linecap="round" stroke-dasharray="3 9"
+                class="data-trace dt-d3"/>
+
+              <!-- Secondary targeting arcs (drifts relative to primary) -->
+              <g class="svg-ring svg-r5">
+                <path d="M 230 73 A 157 157 0 0 1 387 230"
+                  fill="none" stroke="rgba(0,212,255,0.24)"
+                  stroke-width="1" stroke-linecap="round"/>
+                <path d="M 230 387 A 157 157 0 0 1 73 230"
+                  fill="none" stroke="rgba(0,212,255,0.24)"
+                  stroke-width="1" stroke-linecap="round"/>
+              </g>
+
+              <!-- Radar sweep arm (slow rotation, ~52s) -->
+              <g class="svg-ring svg-r-sweep">
+                <line x1="230" y1="230" x2="230" y2="76"
+                  stroke="rgba(0,212,255,0.18)" stroke-width="1.5"
+                  stroke-linecap="round"/>
+                <circle cx="230" cy="76" r="2.5"
+                  fill="rgba(0,212,255,0.5)"/>
+              </g>
+
+              <!-- Primary targeting arcs (9s CW) -->
+              <g class="svg-ring svg-r3">
+                <path d="M 230 73 A 157 157 0 0 1 387 230"
+                  fill="none" stroke="rgba(0,212,255,0.58)"
+                  stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M 230 387 A 157 157 0 0 1 73 230"
+                  fill="none" stroke="rgba(0,212,255,0.58)"
+                  stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Tick marks at arc endpoints -->
+                <line x1="230" y1="67" x2="230" y2="81" stroke="rgba(0,212,255,0.45)" stroke-width="1.5"/>
+                <line x1="393" y1="230" x2="379" y2="230" stroke="rgba(0,212,255,0.45)" stroke-width="1.5"/>
+                <line x1="230" y1="393" x2="230" y2="379" stroke="rgba(0,212,255,0.45)" stroke-width="1.5"/>
+                <line x1="67"  y1="230" x2="81"  y2="230" stroke="rgba(0,212,255,0.45)" stroke-width="1.5"/>
+              </g>
+
+              <!-- Dashed cyan ring (14s CCW) -->
+              <g class="svg-ring svg-r2">
+                <circle cx="230" cy="230" r="127"
+                  fill="none" stroke="rgba(0,212,255,0.2)"
+                  stroke-width="1" stroke-dasharray="8 22"/>
+              </g>
+
+              <!-- Gold tick ring (7s CW) -->
+              <g class="svg-ring svg-r1">
+                <circle cx="230" cy="230" r="87"
+                  fill="none" stroke="rgba(201,168,76,0.5)"
+                  stroke-width="1.5" stroke-dasharray="3 13"/>
+              </g>
+
+              <!-- Inner breathe ring -->
+              <circle cx="230" cy="230" r="51"
+                fill="none" stroke="rgba(201,168,76,0.24)"
+                stroke-width="1" stroke-dasharray="2 7"
+                class="svg-inner-pulse"/>
+
+              <!-- Center glow + border -->
+              <circle cx="230" cy="230" r="66" fill="url(#coreCenterGlow)"/>
+              <circle cx="230" cy="230" r="66"
+                fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+            </svg>
+
+            <!-- Center text layer -->
+            <div class="core-center">
+              <div class="core-mark">A</div>
+              <div class="core-label">ALFRED</div>
+              <div class="core-status" id="coreStatus">ONLINE</div>
+            </div>
+          </div>
+          <div class="core-tagline" id="coreTagline">STANDING BY — SELECT WORKSPACE OR MESSAGE ALFRED</div>
+        </div>
+
+        <!-- Right nodes: LAM + Wealth -->
+        <div class="home-nodes home-nodes-right">
+          <div class="ws-node" onclick="enterWorkspace('lam')">
+            <div class="node-orbit-dot"></div>
+            <div class="node-content">
+              <div class="node-name">LIVING<br>ALPHA MALE</div>
+              <div class="badge badge-amber" style="margin:4px 0">STAGE-FIRST</div>
+              <div class="node-stat" id="node-lam-stat">MTD: $—</div>
+            </div>
+          </div>
+          <div class="node-spacer"></div>
+          <div class="ws-node ws-node-critical" onclick="enterWorkspace('wealth')">
+            <div class="node-orbit-dot node-orbit-dot-red"></div>
+            <div class="node-content">
+              <div class="node-name">WEALTH</div>
+              <div class="badge badge-red" style="margin:4px 0">CRITICAL</div>
+              <div class="node-stat" id="node-wealth-stat">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Alerts strip — rendered dynamically by renderHomeAlerts() -->
+      <div class="home-alerts" id="homeAlerts">
+        <span class="alert-label">⚠ ACTIVE ALERTS</span>
+        <span class="alert-chip">Loading...</span>
+      </div>
+    </div>
+
+    <!-- ── MARTINEZ CAPITAL ── -->
+    <div id="screen-mc" class="screen workspace">
+      <div class="ws-hud-header">
+        <div class="ws-back" onclick="goHome()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          CORE
+        </div>
+        <div class="ws-hud-title">
+          <span class="ws-hud-name">MARTINEZ CAPITAL</span>
+          <span class="ws-hud-sub">Final Expense · Florida · GHL</span>
+        </div>
+        <div class="ws-hud-badges">
+          <span class="badge badge-amber">MIN OP MODE</span>
+          <span class="badge badge-blue">PHASE 1</span>
+          <span class="badge badge-gray" id="ghlSyncBadge" title="GHL is source of truth for MC opportunities. Click to sync.">GHL: NOT SYNCED</span>
+          <button class="hud-btn-sm" id="ghlSyncBtn" onclick="syncFromGHL()" style="font-size:9px;padding:2px 8px">SYNC FROM GHL</button>
+          <span id="ghlLastSync" style="font-size:9px;opacity:0.45;letter-spacing:0.06em"></span>
+        </div>
+        <div class="ws-status-ring" aria-hidden="true">
+          <svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="15" cy="15" r="13" fill="none" stroke="rgba(0,212,255,0.1)" stroke-width="1"/>
+            <g class="wsr-r1"><path d="M15 2 A13 13 0 0 1 28 15" fill="none" stroke="rgba(0,212,255,0.55)" stroke-width="1.5" stroke-linecap="round" class="wsr-accent"/></g>
+            <g class="wsr-r2"><circle cx="15" cy="15" r="9" fill="none" stroke="rgba(0,212,255,0.22)" stroke-width="1" stroke-dasharray="5 10" class="wsr-accent2"/></g>
+            <g class="wsr-r3"><path d="M15 9 A6 6 0 0 1 21 15" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1" stroke-linecap="round"/></g>
+            <circle cx="15" cy="15" r="2.5" fill="rgba(0,212,255,0.7)" class="wsr-accent"/>
+          </svg>
+        </div>
+        <div class="ws-presence"><div class="ws-presence-dot"></div>ALFRED</div>
+      </div>
+
+      <div class="ws-hud-body">
+
+        <!-- COMMAND TRIAD -->
+        <div class="mc-triad-strip">
+          <div class="mc-triad-label">COMMAND TRIAD</div>
+          <div class="mc-triad-cards">
+            <div class="triad-card">
+              <div class="triad-icon">M</div>
+              <div class="triad-info">
+                <div class="triad-name">MAYA</div>
+                <div class="triad-role">Chief Operating Officer</div>
+              </div>
+              <span class="badge badge-blue">ON-DEMAND</span>
+            </div>
+            <div class="triad-card">
+              <div class="triad-icon">A</div>
+              <div class="triad-info">
+                <div class="triad-name">ATLAS</div>
+                <div class="triad-role">Sales Assistant</div>
+              </div>
+              <span class="badge badge-blue">ON-DEMAND</span>
+            </div>
+            <div class="triad-card triad-card-dim">
+              <div class="triad-icon triad-icon-paused">B</div>
+              <div class="triad-info">
+                <div class="triad-name">BROOKS</div>
+                <div class="triad-role">Chief Financial Officer</div>
+              </div>
+              <span class="badge badge-amber">PAUSED</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-COLUMN GRID -->
+        <div class="mc-grid">
+          <!-- LEFT -->
+          <div class="hud-col">
+            <div class="hud-panel">
+              <div class="panel-header">SYSTEM // AGENT REGISTRY</div>
+              <div class="panel-note">All webhooks OFF · Zero auto-runs</div>
+              <div id="mcAgentList" class="agent-mini-list"></div>
+            </div>
+            <div class="hud-panel hud-panel-alert">
+              <div class="panel-header">SYSTEM // BLOCKERS</div>
+              <div id="mcBlockerList"></div>
+            </div>
+          </div>
+
+          <!-- CENTER -->
+          <div class="hud-col hud-col-wide">
+            <div class="hud-panel">
+              <div class="panel-header-row">
+                <div class="panel-header">PIPELINE <span id="mcPipelineCount" class="panel-header-count"></span></div>
+                <div style="display:flex;gap:6px">
+                  <button class="hud-btn-sm gold" onclick="openModal('modal-log-close')">LOG CLOSE</button>
+                  <button class="hud-btn-sm" onclick="openModal('modal-update-lead')">UPDATE LEAD</button>
+                  <button class="hud-btn-sm" onclick="openModal('modal-add-call')">+ ADD</button>
+                </div>
+              </div>
+              <div id="mcPipelineHud"></div>
+            </div>
+            <div class="hud-panel" id="mcNurturePanel" style="display:none">
+              <div class="panel-header">NURTURE QUEUE</div>
+              <div id="mcNurtureHud"></div>
+            </div>
+            <div class="hud-panel" id="mcClosedPanel" style="display:none">
+              <div class="panel-header">CLOSED / DEAD</div>
+              <div id="mcClosedHud"></div>
+            </div>
+          </div>
+
+          <!-- RIGHT -->
+          <div class="hud-col">
+            <div class="hud-panel">
+              <div class="panel-header">SYSTEM // STATUS</div>
+              <div class="stat-row"><span class="stat-label">Phase</span><span class="stat-val cyan" id="mcPhase">1 · Warm Market</span></div>
+              <div class="stat-row"><span class="stat-label">Revenue MTD</span><span class="stat-val green" id="mcRevenueMTD">$0</span></div>
+              <div class="stat-row"><span class="stat-label">Revenue Goal</span><span class="stat-val" id="mcRevenueGoal">$10K/mo</span></div>
+              <div class="stat-row"><span class="stat-label">Policies Closed</span><span class="stat-val" id="mcPoliciesClosed">0</span></div>
+              <div class="stat-row"><span class="stat-label">Pipeline</span><span class="stat-val" id="mcPipelineStat">—</span></div>
+              <div class="stat-row"><span class="stat-label">Stale</span><span class="stat-val" id="mcStaleStat">—</span></div>
+              <div class="stat-row"><span class="stat-label">Top Call</span><span class="stat-val cyan" id="mcTopCallStat">—</span></div>
+            </div>
+            <div class="hud-panel">
+              <div class="panel-header">SYSTEM // NOTES</div>
+              <textarea class="hud-textarea" id="mcNotes" placeholder="Workspace notes..." onblur="saveNotes('mc')"></textarea>
+            </div>
+            <div class="hud-panel" id="syncHealthPanel">
+              <div class="panel-header">GHL // SYNC HEALTH</div>
+              <div id="syncHealthBody">
+                <div class="sync-health-loading">Loading…</div>
+              </div>
+            </div>
+            <div class="hud-panel">
+              <div class="panel-header">RECENT ACTIVITY</div>
+              <div id="mcRecentActivity" class="recent-activity-list"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── LIVING ALPHA MALE ── -->
+    <div id="screen-lam" class="screen workspace">
+      <div class="ws-hud-header">
+        <div class="ws-back" onclick="goHome()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          CORE
+        </div>
+        <div class="ws-hud-title">
+          <span class="ws-hud-name">LIVING ALPHA MALE</span>
+          <span class="ws-hud-sub">Men's Brand · Digital Products</span>
+        </div>
+        <div class="ws-hud-badges">
+          <span class="badge badge-amber">STAGE-FIRST</span>
+          <span class="badge badge-blue">NO AUTO-RUNS</span>
+        </div>
+        <div class="ws-status-ring" aria-hidden="true">
+          <svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="15" cy="15" r="13" fill="none" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
+            <g class="wsr-r1"><path d="M15 2 A13 13 0 0 1 28 15" fill="none" stroke="rgba(201,168,76,0.6)" stroke-width="1.5" stroke-linecap="round"/></g>
+            <g class="wsr-r2"><circle cx="15" cy="15" r="9" fill="none" stroke="rgba(201,168,76,0.22)" stroke-width="1" stroke-dasharray="5 10"/></g>
+            <g class="wsr-r3"><path d="M15 9 A6 6 0 0 1 21 15" fill="none" stroke="rgba(0,212,255,0.4)" stroke-width="1" stroke-linecap="round"/></g>
+            <circle cx="15" cy="15" r="2.5" fill="rgba(201,168,76,0.8)"/>
+          </svg>
+        </div>
+        <div class="ws-presence"><div class="ws-presence-dot"></div>ALFRED</div>
+      </div>
+
+      <div class="ws-hud-body">
+        <div class="hud-col">
+          <div class="hud-panel">
+            <div class="panel-header">SYSTEM // AGENT REGISTRY</div>
+            <div class="panel-note">Stage-first · No auto-publishing</div>
+            <div id="lamAgentList" class="agent-mini-list"></div>
+          </div>
+          <div class="hud-panel hud-panel-alert">
+            <div class="panel-header">SYSTEM // BLOCKERS</div>
+            <div id="lamBlockerList"></div>
+          </div>
+        </div>
+
+        <div class="hud-col hud-col-wide">
+          <div class="hud-panel">
+            <div class="panel-header">REVENUE BY PRODUCT</div>
+            <div id="lamProductList"></div>
+            <div class="stat-divider"></div>
+            <div class="stat-row"><span class="stat-label"><strong>Total MTD</strong></span><span class="stat-val green"><strong id="lamRevenueMTD">$—</strong></span></div>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header-row">
+              <div class="panel-header">PRODUCTION QUEUE</div>
+              <button class="hud-btn-sm" onclick="openAddProduct()">+ ADD</button>
+            </div>
+            <div id="lamProductQueueHud"></div>
+          </div>
+        </div>
+
+        <div class="hud-col">
+          <div class="hud-panel">
+            <div class="panel-header">SYSTEM // STATS</div>
+            <div class="stat-row"><span class="stat-label">MTD Revenue</span><span class="stat-val gold" id="lamStatsMTD">$—</span></div>
+            <div class="stat-row"><span class="stat-label">Units Sold</span><span class="stat-val" id="lamStatsSold">—</span></div>
+            <div class="stat-row"><span class="stat-label">Email List</span><span class="stat-val dim">—</span></div>
+            <div class="stat-row"><span class="stat-label">Next Product</span><span class="stat-val" id="lamNextProduct">—</span></div>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header">SYSTEM // NOTES</div>
+            <textarea class="hud-textarea" id="lamNotes" placeholder="Content ideas, product plans..." onblur="saveNotes('lam')"></textarea>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header">RECENT ACTIVITY</div>
+            <div id="lamRecentActivity" class="recent-activity-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LIFE OS ── -->
+    <div id="screen-lifeos" class="screen workspace">
+      <div class="ws-hud-header">
+        <div class="ws-back" onclick="goHome()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          CORE
+        </div>
+        <div class="ws-hud-title">
+          <span class="ws-hud-name">LIFE OS</span>
+          <span class="ws-hud-sub">Discipline · Body · Planning · Sept 1 Target</span>
+        </div>
+        <div class="ws-hud-badges">
+          <span class="badge badge-blue">MONK MODE</span>
+        </div>
+        <div class="ws-status-ring" aria-hidden="true">
+          <svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="15" cy="15" r="13" fill="none" stroke="rgba(62,207,142,0.1)" stroke-width="1"/>
+            <g class="wsr-r1"><path d="M15 2 A13 13 0 0 1 28 15" fill="none" stroke="rgba(62,207,142,0.6)" stroke-width="1.5" stroke-linecap="round"/></g>
+            <g class="wsr-r2"><circle cx="15" cy="15" r="9" fill="none" stroke="rgba(62,207,142,0.22)" stroke-width="1" stroke-dasharray="5 10"/></g>
+            <g class="wsr-r3"><path d="M15 9 A6 6 0 0 1 21 15" fill="none" stroke="rgba(201,168,76,0.4)" stroke-width="1" stroke-linecap="round"/></g>
+            <circle cx="15" cy="15" r="2.5" fill="rgba(62,207,142,0.8)"/>
+          </svg>
+        </div>
+        <div class="ws-presence"><div class="ws-presence-dot"></div>ALFRED</div>
+      </div>
+
+      <div class="ws-hud-body">
+        <!-- LEFT: Non-negotiables + Daily Protocol -->
+        <div class="hud-col">
+          <div class="hud-panel">
+            <div class="panel-header-row">
+              <span class="panel-header">NON-NEGOTIABLES</span>
+              <button class="hud-btn-sm gold" onclick="openModal('modal-checkin')">CHECK IN</button>
+            </div>
+            <div class="panel-note" id="lifeosCheckinDate">Today's check-in</div>
+            <div id="lifeosNNList">
+              <label class="nn-item"><input type="checkbox" id="nn-Bible" disabled><span class="nn-label">Bible</span></label>
+              <label class="nn-item"><input type="checkbox" id="nn-Workout" disabled><span class="nn-label">Workout — 6AM Gym</span></label>
+              <label class="nn-item"><input type="checkbox" id="nn-Business" disabled><span class="nn-label">Business</span></label>
+            </div>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header">DAILY PROTOCOL</div>
+            <div id="lifeosProtocol">
+              <div class="proto-row"><span class="proto-time">06:00</span><span class="proto-act">Gym</span></div>
+              <div class="proto-row"><span class="proto-time">10:00</span><span class="proto-act">Insurance sales</span></div>
+              <div class="proto-row"><span class="proto-time">13:00</span><span class="proto-act">Pipeline + follow-ups</span></div>
+              <div class="proto-row"><span class="proto-time">19:00</span><span class="proto-act">LAM content</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER: Countdown + Key Dates + Weight -->
+        <div class="hud-col hud-col-wide">
+          <div class="hud-panel">
+            <div class="panel-header">TARGET COUNTDOWN</div>
+            <div class="countdown-hud">
+              <div class="countdown-hud-block">
+                <div class="countdown-hud-num" id="daysToQuit">—</div>
+                <div class="countdown-hud-label">DAYS TO QUIT W2<br>September 1, 2026</div>
+              </div>
+              <div class="countdown-hud-divider"></div>
+              <div class="countdown-hud-block">
+                <div class="countdown-hud-num" id="lbsToGoal">—</div>
+                <div class="countdown-hud-label">LBS TO GOAL<br><span id="weightRange">— → 200 lbs</span></div>
+              </div>
+              <div class="countdown-hud-divider"></div>
+              <div class="countdown-hud-block">
+                <div class="countdown-hud-num green" id="weightStatus">—</div>
+                <div class="countdown-hud-label">WEIGHT PACE<br>2.75 lbs/week</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hud-panel">
+            <div class="panel-header-row">
+              <span class="panel-header">WEIGHT LOG</span>
+              <button class="hud-btn-sm gold" onclick="openModal('modal-log-weight')">LOG WEIGHT</button>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Start</span>
+              <span class="stat-val" id="weightStart">247 lbs</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Current</span>
+              <span class="stat-val green" id="weightCurrent">— lbs</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Goal</span>
+              <span class="stat-val">200 lbs · Sept 1</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div id="weightLogList" style="margin-top:6px"></div>
+          </div>
+
+          <div class="hud-panel">
+            <div class="panel-header">KEY DATES</div>
+            <div class="stat-row"><span class="stat-label">Sept 1 — Quit W2</span><span class="badge badge-gold" id="kdQuitW2">— days</span></div>
+            <div class="stat-row"><span class="stat-label">Sept 1 — 200 lbs goal</span><span class="badge badge-blue" id="kdWeightGoal">— days</span></div>
+            <div class="stat-row"><span class="stat-label">Sept 9 — 47th Birthday</span><span class="badge badge-gray" id="kdBirthday">— days</span></div>
+            <div class="stat-row"><span class="stat-label">Sept 2026 — Medellín</span><span class="badge badge-gray">~90 days</span></div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Scoreboard + Notes + Activity -->
+        <div class="hud-col">
+          <div class="hud-panel">
+            <div class="panel-header-row">
+              <span class="panel-header">WEEKLY SCOREBOARD</span>
+              <button class="hud-btn-sm" onclick="openModal('modal-log-week')">LOG WEEK</button>
+            </div>
+            <div class="panel-note" id="scoreboardWeekOf">No entry yet</div>
+            <div class="stat-row"><span class="stat-label">Body (gym sessions)</span><span class="stat-val" id="sb-body">—</span></div>
+            <div class="stat-row"><span class="stat-label">Discipline (streak days)</span><span class="stat-val" id="sb-discipline">—</span></div>
+            <div class="stat-row"><span class="stat-label">Social (relationships)</span><span class="stat-val" id="sb-social">—</span></div>
+            <div class="stat-row"><span class="stat-label">Wins (closings)</span><span class="stat-val" id="sb-wins">—</span></div>
+            <div class="stat-row"><span class="stat-label">Focus (LAM content)</span><span class="stat-val" id="sb-focus">—</span></div>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header">SYSTEM // NOTES</div>
+            <textarea class="hud-textarea" id="lifeosNotes" placeholder="Wins, blockers, reflection..." onblur="saveNotes('lifeos')"></textarea>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header">RECENT ACTIVITY</div>
+            <div id="lifeosRecentActivity" class="recent-activity-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── WEALTH ── -->
+    <div id="screen-wealth" class="screen workspace">
+      <div class="ws-hud-header">
+        <div class="ws-back" onclick="goHome()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          CORE
+        </div>
+        <div class="ws-hud-title">
+          <span class="ws-hud-name">WEALTH COMMAND</span>
+          <span class="ws-hud-sub">Debt Elimination · Credit Repair · Budget</span>
+        </div>
+        <div class="ws-hud-badges">
+          <span class="badge badge-red">CRITICAL DEADLINES</span>
+        </div>
+        <div class="ws-status-ring" aria-hidden="true">
+          <svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="15" cy="15" r="13" fill="none" stroke="rgba(248,113,113,0.1)" stroke-width="1"/>
+            <g class="wsr-r1"><path d="M15 2 A13 13 0 0 1 28 15" fill="none" stroke="rgba(248,113,113,0.65)" stroke-width="1.5" stroke-linecap="round"/></g>
+            <g class="wsr-r2"><circle cx="15" cy="15" r="9" fill="none" stroke="rgba(248,113,113,0.22)" stroke-width="1" stroke-dasharray="5 10"/></g>
+            <g class="wsr-r3"><path d="M15 9 A6 6 0 0 1 21 15" fill="none" stroke="rgba(201,168,76,0.4)" stroke-width="1" stroke-linecap="round"/></g>
+            <circle cx="15" cy="15" r="2.5" fill="rgba(248,113,113,0.85)"/>
+          </svg>
+        </div>
+        <div class="ws-presence"><div class="ws-presence-dot"></div>ALFRED</div>
+      </div>
+
+      <div class="ws-hud-body">
+        <div class="hud-col">
+          <div class="hud-panel hud-panel-alert">
+            <div class="panel-header">SYSTEM // URGENT DEADLINES</div>
+            <div id="wealthUrgentDeadlinesPanel">Loading…</div>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header-row">
+              <div class="panel-header">DISPUTE STATUS</div>
+              <button class="hud-btn-sm" onclick="openModal('modal-update-dispute')">UPDATE</button>
+            </div>
+            <div id="wealthDeadlines"></div>
+          </div>
+        </div>
+
+        <div class="hud-col hud-col-wide">
+          <div class="hud-panel">
+            <div class="panel-header-row">
+              <div class="panel-header">DEBT SNOWBALL — KILL ORDER</div>
+              <button class="hud-btn-sm" onclick="openModal('modal-log-payment')">LOG PAYMENT</button>
+            </div>
+            <div id="wealthDebtList"></div>
+          </div>
+        </div>
+
+        <div class="hud-col">
+          <div class="hud-panel">
+            <div class="panel-header">SYSTEM // NET WORTH</div>
+            <div class="stat-row"><span class="stat-label">Total Debt</span><span class="stat-val" style="color:var(--red)" id="wealthTotalDebt">$116,952</span></div>
+            <div class="stat-row"><span class="stat-label">Total Assets</span><span class="stat-val" id="wealthTotalAssets">$298.45</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat-row"><span class="stat-label">Net Worth</span><span class="stat-val" style="color:var(--red)" id="wealthNetWorth">-$116,654</span></div>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header-row">
+              <div class="panel-header">CREDIT SCORES</div>
+              <button class="hud-btn-sm" onclick="openModal('modal-log-score')">LOG SCORE</button>
+            </div>
+            <div id="wealthScores"></div>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header">REVENUE TRACKER</div>
+            <div class="stat-row"><span class="stat-label">MC MTD</span><span class="stat-val green" id="wealthMCRevenue">$0</span></div>
+            <div class="stat-row"><span class="stat-label">LAM MTD</span><span class="stat-val gold" id="wealthLAMRevenue">$—</span></div>
+            <div class="stat-row"><span class="stat-label">W2 (biweekly)</span><span class="stat-val" id="wealthW2Income">$—</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat-row"><span class="stat-label">Total MTD</span><span class="stat-val green" id="wealthTotalRevenue">$—</span></div>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header">SYSTEM // NOTES</div>
+            <textarea class="hud-textarea" id="wealthNotes" placeholder="Wealth notes..." onblur="saveNotes('wealth')"></textarea>
+          </div>
+          <div class="hud-panel">
+            <div class="panel-header">RECENT ACTIVITY</div>
+            <div id="wealthRecentActivity" class="recent-activity-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── APPROVALS SCREEN ── -->
+    <div id="screen-approvals" class="screen workspace">
+      <div class="ws-hud-header">
+        <div class="ws-back" onclick="goHome()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          CORE
+        </div>
+        <div class="ws-hud-title">
+          <span class="ws-hud-name">APPROVALS</span>
+          <span class="ws-hud-sub">Review · Approve · Defer · Log</span>
+        </div>
+        <div class="ws-hud-badges">
+          <span class="badge badge-gold" id="approvalQueueBadge">0 PENDING</span>
+        </div>
+        <div class="ws-presence"><div class="ws-presence-dot"></div>ALFRED</div>
+      </div>
+      <div class="approvals-body">
+        <div class="approvals-rule-banner">
+          Draft first → Alfred surfaces action → You approve, reject, or defer → Alfred acts. Nothing consequential happens without your explicit yes.
+        </div>
+        <div class="approvals-cols">
+          <div class="approvals-col">
+            <div class="panel-header" style="margin-bottom:12px">PENDING</div>
+            <div id="approvalsListScreen"><div class="hud-empty">No pending approvals.</div></div>
+          </div>
+          <div class="approvals-col">
+            <div class="panel-header" style="margin-bottom:12px">HISTORY</div>
+            <div id="approvalsHistory"><div class="hud-empty">No resolved actions yet.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- ── ALFRED CHAT OVERLAY ── -->
+  <div class="chat-overlay" id="chatOverlay">
+    <div class="chat-overlay-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="chat-core-dot" id="chatCoreDot"></div>
+        <span class="chat-overlay-title">ALFRED</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="hud-btn-sm" onclick="generateBriefing()">BRIEFING</button>
+        <button class="hud-btn-sm" onclick="clearChat()">CLEAR</button>
+        <button class="chat-close" onclick="toggleChat()">✕</button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg alfred">
+        <div class="msg-role">ALFRED</div>
+        <div class="msg-body">Standing by. What do you need?</div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chatInput" placeholder="Message Alfred..." rows="1"
+        onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="chat-send" id="chatSend" onclick="sendMessage()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#040810" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── MEMORY OVERLAY ── -->
+  <div class="modal-backdrop" id="overlay-memory" onclick="closeOverlay(event,'memory')">
+    <div class="modal-panel memory-modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>ALFRED MEMORY</span>
+        <div style="display:flex;gap:8px">
+          <button class="hud-btn-sm gold" onclick="saveAllMemory()">SAVE</button>
+          <button class="chat-close" onclick="closeOverlay(null,'memory')">✕</button>
+        </div>
+      </div>
+      <!-- Tabs -->
+      <div class="memory-tabs">
+        <button class="memory-tab active" id="tab-facts" onclick="switchMemoryTab('facts')">FACTS</button>
+        <button class="memory-tab" id="tab-activity" onclick="switchMemoryTab('activity')">ACTIVITY LOG</button>
+      </div>
+      <!-- Facts tab -->
+      <div class="modal-body" id="memory-tab-facts">
+        <div class="hud-panel" style="margin-bottom:12px;font-size:12px;color:var(--text2);line-height:1.6">
+          Facts injected into every Alfred conversation. Keep them accurate. Edit inline. Delete stale entries.
+        </div>
+        <div id="memoryList"></div>
+        <div class="fact-add-row">
+          <input type="text" class="hud-input" id="newFactInput" placeholder="Add a new fact..." onkeydown="if(event.key==='Enter')addFact()">
+          <button class="hud-btn-sm gold" onclick="addFact()">ADD</button>
+        </div>
+      </div>
+      <!-- Activity log tab -->
+      <div class="modal-body hidden" id="memory-tab-activity">
+        <div class="activity-filters">
+          <select class="hud-input" id="activityWsFilter" onchange="renderActivityLog()" style="width:auto;min-width:140px">
+            <option value="">ALL WORKSPACES</option>
+            <option value="mc">MARTINEZ CAPITAL</option>
+            <option value="lam">LIVING ALPHA MALE</option>
+            <option value="lifeos">LIFE OS</option>
+            <option value="wealth">WEALTH</option>
+          </select>
+          <span class="activity-filter-label">Filter by workspace</span>
+        </div>
+        <div id="activityLog"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: LOG POLICY CLOSE ── -->
+  <div class="modal-backdrop" id="modal-log-close" onclick="closeModal(event,'modal-log-close')">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>LOG POLICY CLOSE</span>
+        <button class="chat-close" onclick="closeModal(null,'modal-log-close')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label" for="closeContact">Contact / Client Name</label>
+          <input type="text" class="hud-input" id="closeContact" placeholder="Name on policy">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="closePremium">Annual Premium ($)</label>
+          <input type="number" class="hud-input" id="closePremium" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="modal-actions">
+          <button class="hud-btn gold" onclick="submitLogClose()">CONFIRM CLOSE</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-log-close')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: ADD LEAD ── -->
+  <div class="modal-backdrop" id="modal-add-call" onclick="closeModal(event,'modal-add-call')">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>ADD LEAD TO PIPELINE</span>
+        <button class="chat-close" onclick="closeModal(null,'modal-add-call')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label" for="callName">Lead Name</label>
+          <input type="text" class="hud-input" id="callName" placeholder="Name">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="callGhlStage">GHL Stage</label>
+          <select class="hud-input" id="callGhlStage">
+            <option value="Inbound Lead">Inbound Lead</option>
+            <option value="Consent Verified">Consent Verified</option>
+            <option value="Contact Attempted">Contact Attempted</option>
+            <option value="Connected">Connected</option>
+            <option value="Needs Analysis">Needs Analysis</option>
+            <option value="App Submitted">App Submitted</option>
+            <option value="In Review">In Review</option>
+            <option value="Approved">Approved</option>
+            <option value="Issued / Funded">Issued / Funded</option>
+            <option value="Not Interested">Not Interested</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="callValue">Annual Premium Value ($) <span style="opacity:0.5">optional</span></label>
+          <input type="number" class="hud-input" id="callValue" placeholder="0" min="0" step="1">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="callNextAction">Next Action <span style="opacity:0.5">optional</span></label>
+          <input type="text" class="hud-input" id="callNextAction" placeholder="Leave blank to use stage default">
+        </div>
+        <div class="modal-note" style="font-size:10px;color:var(--text3);margin-top:4px">GHL is source of truth. This entry is marked MANUAL until GHL sync is live.</div>
+        <div class="modal-actions">
+          <button class="hud-btn gold" onclick="submitAddCall()">ADD LEAD</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-add-call')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: UPDATE LEAD ── -->
+  <div class="modal-backdrop" id="modal-update-lead" onclick="closeModal(event,'modal-update-lead')">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>UPDATE LEAD</span>
+        <button class="chat-close" onclick="closeModal(null,'modal-update-lead')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label" for="updateLeadName">Lead Name</label>
+          <select class="hud-input" id="updateLeadName"></select>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="updateLeadStage">GHL Stage</label>
+          <select class="hud-input" id="updateLeadStage">
+            <option value="">— no change —</option>
+            <option value="Inbound Lead">Inbound Lead</option>
+            <option value="Consent Verified">Consent Verified</option>
+            <option value="Contact Attempted">Contact Attempted</option>
+            <option value="Connected">Connected</option>
+            <option value="Needs Analysis">Needs Analysis</option>
+            <option value="App Submitted">App Submitted</option>
+            <option value="In Review">In Review</option>
+            <option value="Approved">Approved</option>
+            <option value="Issued / Funded">Issued / Funded</option>
+            <option value="Not Interested">Not Interested</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="updateLeadLastContact">Last Contact Date</label>
+          <input type="date" class="hud-input" id="updateLeadLastContact">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="updateLeadNextDate">Next Action Date</label>
+          <input type="date" class="hud-input" id="updateLeadNextDate">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="updateLeadNextAction">Next Action Note</label>
+          <input type="text" class="hud-input" id="updateLeadNextAction" placeholder="Leave blank to use stage default">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="updateLeadValue">Annual Premium Value ($)</label>
+          <input type="number" class="hud-input" id="updateLeadValue" placeholder="0" min="0" step="1">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="updateLeadNote">Alfred Note</label>
+          <input type="text" class="hud-input" id="updateLeadNote" placeholder="Internal note — not synced to GHL">
+        </div>
+        <div class="modal-actions">
+          <button class="hud-btn gold" onclick="submitUpdateLead()">SAVE CHANGES</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-update-lead')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: LOG PAYMENT ── -->
+  <div class="modal-backdrop" id="modal-log-payment" onclick="closeModal(event,'modal-log-payment')">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>LOG DEBT PAYMENT</span>
+        <button class="chat-close" onclick="closeModal(null,'modal-log-payment')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label" for="paymentAccount">Account</label>
+          <select class="hud-input" id="paymentAccount">
+            <option value="">— select account —</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="paymentAmount">Payment Amount ($)</label>
+          <input type="number" class="hud-input" id="paymentAmount" placeholder="0.00" min="0.01" step="0.01">
+        </div>
+        <div class="modal-actions">
+          <button class="hud-btn gold" onclick="submitLogPayment()">LOG PAYMENT</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-log-payment')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: LOG CREDIT SCORE ── -->
+  <div class="modal-backdrop" id="modal-log-score" onclick="closeModal(event,'modal-log-score')">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>LOG CREDIT SCORE</span>
+        <button class="chat-close" onclick="closeModal(null,'modal-log-score')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label" for="scoreBureau">Bureau</label>
+          <select class="hud-input" id="scoreBureau">
+            <option value="experian">Experian</option>
+            <option value="transunion">TransUnion</option>
+            <option value="equifax">Equifax</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="scoreValue">Score</label>
+          <input type="number" class="hud-input" id="scoreValue" placeholder="e.g. 680" min="300" max="850">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="scoreModel">Model</label>
+          <select class="hud-input" id="scoreModel">
+            <option value="FICO">FICO</option>
+            <option value="VantageScore">VantageScore</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="scoreAsOf">As Of</label>
+          <input type="text" class="hud-input" id="scoreAsOf" placeholder="e.g. July 2026">
+        </div>
+        <div class="modal-actions">
+          <button class="hud-btn gold" onclick="submitLogScore()">LOG SCORE</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-log-score')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: UPDATE DISPUTE ── -->
+  <div class="modal-backdrop" id="modal-update-dispute" onclick="closeModal(event,'modal-update-dispute')">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>UPDATE DISPUTE STATUS</span>
+        <button class="chat-close" onclick="closeModal(null,'modal-update-dispute')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label" for="disputeLabel">Dispute / Deadline</label>
+          <select class="hud-input" id="disputeLabel">
+            <option value="">— select —</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="disputeStatus">New Status</label>
+          <select class="hud-input" id="disputeStatus">
+            <option value="FILED">Filed</option>
+            <option value="RESPONSE RECEIVED">Response Received</option>
+            <option value="RESOLVED">Resolved</option>
+            <option value="DISMISSED">Dismissed</option>
+            <option value="ESCALATED">Escalated</option>
+            <option value="PENDING">Pending</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="disputeNote">Note (optional)</label>
+          <input type="text" class="hud-input" id="disputeNote" placeholder="e.g. attorney filed, waiting 30 days">
+        </div>
+        <div class="modal-actions">
+          <button class="hud-btn gold" onclick="submitUpdateDispute()">UPDATE</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-update-dispute')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: AGENT TRANSITION ── -->
+  <div class="modal-backdrop" id="modal-agent-transition" onclick="closeModal(event,'modal-agent-transition')">
+    <div class="modal-panel agent-modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <span id="agentModalName">AGENT</span>
+          <span class="agent-modal-ws" id="agentModalWs"></span>
+        </div>
+        <button class="chat-close" onclick="closeModal(null,'modal-agent-transition')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="agent-modal-state-row">
+          <div>
+            <div class="form-label" style="margin-bottom:4px">CURRENT STATE</div>
+            <span id="agentModalCurrentBadge" class="badge">—</span>
+          </div>
+          <div id="agentModalPending" class="agent-pending-notice" style="display:none">
+            ⏳ Activation pending approval
+          </div>
+        </div>
+        <div class="agent-modal-reason" id="agentModalReason"></div>
+        <div class="agent-modal-history" id="agentModalHistory"></div>
+        <div class="agent-modal-transitions" id="agentModalTransitions"></div>
+        <div class="form-row" id="agentNoteRow" style="display:none">
+          <label class="form-label" id="agentNoteLabel">NOTE / REASON</label>
+          <input type="text" class="hud-input" id="agentTransitionNote" placeholder="Explain the context for this change">
+        </div>
+        <input type="hidden" id="agentModalWorkspace">
+        <input type="hidden" id="agentModalTargetState">
+        <div class="modal-actions" id="agentModalActions" style="display:none">
+          <button class="hud-btn gold" id="agentConfirmBtn" onclick="submitAgentTransition()">CONFIRM</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-agent-transition')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: APPROVAL DEFER ── -->
+  <div class="modal-backdrop" id="modal-defer" onclick="closeModal(event,'modal-defer')">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>DEFER ACTION</span>
+        <button class="chat-close" onclick="closeModal(null,'modal-defer')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label" for="deferNote">Reason for deferral</label>
+          <input type="text" class="hud-input" id="deferNote" placeholder="e.g. waiting on more info, revisit Friday">
+        </div>
+        <input type="hidden" id="deferTargetId">
+        <div class="modal-actions">
+          <button class="hud-btn gold" onclick="submitDefer()">DEFER</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-defer')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: LOG WEIGHT ── -->
+  <div class="modal-backdrop" id="modal-log-weight" onclick="closeModal(event,'modal-log-weight')">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>LOG WEIGHT</span>
+        <button class="chat-close" onclick="closeModal(null,'modal-log-weight')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label" for="weightEntry">WEIGHT (LBS)</label>
+          <input type="number" class="hud-input" id="weightEntry" placeholder="e.g. 237.5" step="0.1" min="100" max="400">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="weightDate">DATE</label>
+          <input type="date" class="hud-input" id="weightDate">
+        </div>
+        <div class="modal-actions">
+          <button class="hud-btn gold" onclick="submitLogWeight()">LOG WEIGHT</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-log-weight')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: DAILY CHECK-IN ── -->
+  <div class="modal-backdrop" id="modal-checkin" onclick="closeModal(event,'modal-checkin')">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>DAILY CHECK-IN</span>
+        <button class="chat-close" onclick="closeModal(null,'modal-checkin')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="hud-panel" style="margin-bottom:12px;font-size:12px;color:var(--text2)">
+          Mark what you completed today. This saves to your daily log.
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="checkinDate">DATE</label>
+          <input type="date" class="hud-input" id="checkinDate">
+        </div>
+        <div style="margin-top:12px">
+          <label class="nn-item"><input type="checkbox" id="ci-Bible"><span class="nn-label">Bible</span></label>
+          <label class="nn-item"><input type="checkbox" id="ci-Workout"><span class="nn-label">Workout — 6AM Gym</span></label>
+          <label class="nn-item"><input type="checkbox" id="ci-Business"><span class="nn-label">Business</span></label>
+        </div>
+        <div class="modal-actions">
+          <button class="hud-btn gold" onclick="submitCheckin()">SAVE CHECK-IN</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-checkin')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: LOG WEEK (SCOREBOARD) ── -->
+  <div class="modal-backdrop" id="modal-log-week" onclick="closeModal(event,'modal-log-week')">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>LOG WEEKLY SCOREBOARD</span>
+        <button class="chat-close" onclick="closeModal(null,'modal-log-week')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label" for="weekOf">WEEK OF (Monday)</label>
+          <input type="date" class="hud-input" id="weekOf">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="sb-body-input">BODY — gym sessions (0–10)</label>
+          <input type="number" class="hud-input" id="sb-body-input" placeholder="0–10" min="0" max="10">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="sb-discipline-input">DISCIPLINE — streak days (0–10)</label>
+          <input type="number" class="hud-input" id="sb-discipline-input" placeholder="0–10" min="0" max="10">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="sb-social-input">SOCIAL — relationships tended (0–10)</label>
+          <input type="number" class="hud-input" id="sb-social-input" placeholder="0–10" min="0" max="10">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="sb-wins-input">WINS — closings / deals (0–10)</label>
+          <input type="number" class="hud-input" id="sb-wins-input" placeholder="0–10" min="0" max="10">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="sb-focus-input">FOCUS — LAM content pieces (0–10)</label>
+          <input type="number" class="hud-input" id="sb-focus-input" placeholder="0–10" min="0" max="10">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="sb-note-input">NOTE (optional)</label>
+          <input type="text" class="hud-input" id="sb-note-input" placeholder="Key win or blocker this week...">
+        </div>
+        <div class="modal-actions">
+          <button class="hud-btn gold" onclick="submitLogWeek()">SAVE WEEK</button>
+          <button class="hud-btn" onclick="closeModal(null,'modal-log-week')">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
