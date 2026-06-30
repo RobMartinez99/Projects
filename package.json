@@ -1,0 +1,16 @@
+{
+  "name": "alfred",
+  "version": "1.0.0",
+  "description": "Alfred — CEO-level master operating system for Rob Martinez",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "express": "^4.21.0",
+    "dotenv": "^16.4.5"
+  }
+}

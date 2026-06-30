@@ -1,0 +1,131 @@
+{
+  "_note": "Keys are verbatim GHL stage names for Martinez Capital Pipeline. Alfred derives all display and agent suggestion logic from this map. Edit keys only if GHL stage names change.",
+  "_pipeline": "Martinez Capital Pipeline",
+  "_stages_ordered": [
+    "Inbound Lead", "Consent Verified", "Contact Attempted", "Connected",
+    "Needs Analysis", "App Submitted", "In Review", "Approved",
+    "Issued / Funded", "Not Interested"
+  ],
+
+  "Inbound Lead": {
+    "alfredPriority": "HIGH",
+    "staleAfterDays": 1,
+    "suggestMaya": false,
+    "suggestAtlas": false,
+    "nextActionHint": "Verify consent before making first contact",
+    "alfredLabel": "INBOUND",
+    "badgeClass": "badge-blue",
+    "activeQueue": true,
+    "nurtureQueue": false,
+    "sortWeight": 70
+  },
+  "Consent Verified": {
+    "alfredPriority": "HIGH",
+    "staleAfterDays": 1,
+    "suggestMaya": true,
+    "suggestAtlas": false,
+    "nextActionHint": "Make first contact call — consent is clear",
+    "alfredLabel": "CONSENT ✓",
+    "badgeClass": "badge-blue",
+    "activeQueue": true,
+    "nurtureQueue": false,
+    "sortWeight": 80
+  },
+  "Contact Attempted": {
+    "alfredPriority": "HIGH",
+    "staleAfterDays": 1,
+    "suggestMaya": true,
+    "suggestAtlas": false,
+    "nextActionHint": "Retry contact — Maya can draft outreach text or voicemail script",
+    "alfredLabel": "ATTEMPTED",
+    "badgeClass": "badge-amber",
+    "activeQueue": true,
+    "nurtureQueue": false,
+    "sortWeight": 75
+  },
+  "Connected": {
+    "alfredPriority": "HIGH",
+    "staleAfterDays": 2,
+    "suggestMaya": true,
+    "suggestAtlas": false,
+    "nextActionHint": "Schedule needs analysis — follow up to confirm appointment",
+    "alfredLabel": "CONNECTED",
+    "badgeClass": "badge-blue",
+    "activeQueue": true,
+    "nurtureQueue": false,
+    "sortWeight": 85
+  },
+  "Needs Analysis": {
+    "alfredPriority": "HIGH",
+    "staleAfterDays": 2,
+    "suggestMaya": false,
+    "suggestAtlas": true,
+    "nextActionHint": "Complete analysis and prepare quote — Atlas on standby for live call",
+    "alfredLabel": "ANALYSIS",
+    "badgeClass": "badge-gold",
+    "activeQueue": true,
+    "nurtureQueue": false,
+    "sortWeight": 90
+  },
+  "App Submitted": {
+    "alfredPriority": "MEDIUM",
+    "staleAfterDays": 5,
+    "suggestMaya": true,
+    "suggestAtlas": false,
+    "nextActionHint": "Follow up with carrier on underwriting status",
+    "alfredLabel": "APP IN",
+    "badgeClass": "badge-amber",
+    "activeQueue": true,
+    "nurtureQueue": false,
+    "sortWeight": 85
+  },
+  "In Review": {
+    "alfredPriority": "MEDIUM",
+    "staleAfterDays": 7,
+    "suggestMaya": true,
+    "suggestAtlas": false,
+    "nextActionHint": "Check underwriting status — update client if decision is in",
+    "alfredLabel": "IN REVIEW",
+    "badgeClass": "badge-amber",
+    "activeQueue": true,
+    "nurtureQueue": false,
+    "sortWeight": 82
+  },
+  "Approved": {
+    "alfredPriority": "HIGH",
+    "staleAfterDays": 1,
+    "suggestMaya": true,
+    "suggestAtlas": false,
+    "nextActionHint": "Deliver policy and collect signature — time sensitive",
+    "alfredLabel": "APPROVED",
+    "badgeClass": "badge-green",
+    "activeQueue": true,
+    "nurtureQueue": false,
+    "sortWeight": 95
+  },
+  "Issued / Funded": {
+    "alfredPriority": null,
+    "staleAfterDays": null,
+    "suggestMaya": true,
+    "suggestAtlas": false,
+    "nextActionHint": "Log close in Alfred — Maya post-close referral motion ready",
+    "alfredLabel": "ISSUED",
+    "badgeClass": "badge-green",
+    "activeQueue": false,
+    "nurtureQueue": false,
+    "sortWeight": 0,
+    "postCloseAction": "queue_maya_referral"
+  },
+  "Not Interested": {
+    "alfredPriority": null,
+    "staleAfterDays": null,
+    "suggestMaya": false,
+    "suggestAtlas": false,
+    "nextActionHint": null,
+    "alfredLabel": "DEAD",
+    "badgeClass": "badge-gray",
+    "activeQueue": false,
+    "nurtureQueue": false,
+    "sortWeight": 0
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "queue": [
+    {
+      "id": "1782389696826",
+      "title": "Activate AI Call Manager",
+      "description": "Request to move AI Call Manager from FROZEN \u2192 PAUSED. Note: FL 3-call/24hr compliance update confirmed \u2014 safe to re-enable",
+      "workspace": "MC",
+      "actionType": "agent_activate",
+      "payload": {
+        "workspace": "mc",
+        "wsKey": "mc",
+        "agentName": "AI Call Manager",
+        "toState": "PAUSED",
+        "note": "FL 3-call/24hr compliance update confirmed \u2014 safe to re-enable"
+      },
+      "status": "approved",
+      "createdAt": "2026-06-25T12:14:56Z",
+      "resolvedAt": "2026-06-25T12:15:33Z"
+    }
+  ],
+  "history": [
+    {
+      "id": "1782389696826",
+      "title": "Activate AI Call Manager",
+      "description": "Request to move AI Call Manager from FROZEN \u2192 PAUSED. Note: FL 3-call/24hr compliance update confirmed \u2014 safe to re-enable",
+      "workspace": "MC",
+      "actionType": "agent_activate",
+      "payload": {
+        "workspace": "mc",
+        "wsKey": "mc",
+        "agentName": "AI Call Manager",
+        "toState": "PAUSED",
+        "note": "FL 3-call/24hr compliance update confirmed \u2014 safe to re-enable"
+      },
+      "status": "approved",
+      "createdAt": "2026-06-25T12:14:56Z",
+      "resolvedAt": "2026-06-25T12:15:33Z"
+    }
+  ]
+}
